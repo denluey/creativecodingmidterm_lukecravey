@@ -1,9 +1,8 @@
 let spacingX = 20
 let spacingY = 20
-let size = 20
 
 function setup(){
-    createCanvas(800,800);
+    createCanvas(1500,800);
     frameRate(5);
   
   
@@ -11,131 +10,56 @@ function setup(){
 }
 
 function draw(){
-    background(200,100,50);
-    fill(255,200,0);
-    rectMode(CENTER);
+//sky
+background(70,170,255);
+// sea
+fill(20,120,235);
+noStroke();
+rect(0,400,1500,750);
+//pavement
+fill(50,50,50)
+rect(0,700,1500,600);
+railsnpoles();
 
+car();
 
-goldngems(0,0);
-bladenblood(200,0);
-booksnmagic(0,200);
-holything(200,200);
-goldngems(0,400);
-bladenblood(400,200);
-booksnmagic(400,0);
-holything(400,400);
-goldngems(600,600);
-bladenblood(400,600);
-booksnmagic(400,600);
-holything(0,600);
-bladenblood(600,400)
-holything(600,0)
-goldngems(600,200);
-bladenblood(200,600);
-booksnmagic(200,400);
-
-
-
-
-}
-
-function goldngems(xthing,ything){
-
-for (let x = xthing ; x < xthing+200; x += spacingX) {
-    for (let y = ything; y < ything+200; y += spacingY) {
-      push();
-      noStroke();
-      translate(x, y);
-      fill(100,100,255);
-      rect(5,5,size,size)
-      //coin
-      ellipseMode(CENTER)
-      fill(255,200,0);
-      ellipse(5, 5, size, size);
-      fill(0);
-      rect(5,5,size-10,size-10);
-      //gem
-      fill(0,230,0);
-      quad(10,5,15,10,10,15,5,10);
-      quad(0,-5,5,0,0,5,-5,0);
-      pop();
-    }
-  }
-}
-
-function bladenblood(xthing,ything){
-
-for (let x = xthing ; x < xthing+200; x += spacingX) {
-    for (let y = ything;  y < ything+200; y += spacingY) {
-      push();
-      translate(x, y);
-      stroke(100,0,0)
-      fill(100,100,100)
-      rect(5,5,size-5,size-5)
-      noStroke();
-      //blades
-      fill(200,200,200);
-      quad(5,-5,10,5,5,15,0,5);
-      quad(-5,5,5,10,15,5,5,0);
-      //blood
-      fill(200,0,0);
-      quad(-5,0,10,10,15,10,0,0)
-      pop();
-
-    }
-  }
     
+
+
+
+
 }
 
-function booksnmagic(xthing,ything){
+function railsnpoles(){
+    fill(50,50,50);
+    rect(0,660,1500,25)
 
-for (let x = xthing ; x < xthing+200; x += spacingX) {
-    for (let y = ything;  y < ything+200; y += spacingY) {
-      push();
-      //book
-      translate(x, y);
-      fill(100,50,0);
-      stroke(200,230,255)
-      rect(5,5,size-2,size-2)
-      //eye
-      fill(0,0,200);
-      ellipse(5,5,size-10,size-10);
-      fill(50,70,255);
-      noStroke()
-      ellipse(5,5,size-10,size-15);
-      fill(0,0,200);
-      ellipse(5,5,size-18,size-18);
-      pop();
-
-    }
-  }
 }
 
-function holything(xthing,ything){
+function car(){
+    //body
+    fill(50,50,50);
+    beginShape();
+    vertex(500,690);
+    vertex(1000,690);
+    vertex(1000,640)
+    vertex(900,630);
+    vertex(850,510);
+    vertex(580,510);
+    vertex(550,630);
+    vertex(500,640);
+    endShape();
+    //wheel
+    ellipse(600,690,100,100);
+    ellipse(875,690,100,100);
+    //window
+    fill(200,200,200);
+    beginShape();
+    vertex(895,630);
+    vertex(845,515);
+    vertex(750,515);
+    vertex(750,630);
+    endShape();
 
-for (let x = xthing ; x < xthing+200; x += spacingX) {
-    for (let y = ything;  y < ything+200; y += spacingY) {
-      push();
-      translate(x, y);
-      noStroke();
-      fill(0,100,0);
-      rect(5,5,size,size)
-      //light
-      fill(255,255,0);
-      rect(5,5,size-3,size-3);
-      fill(255,255,200);
-      ellipse(5, 5, size-1, size-1);
-      //pedestal
-      fill(255,255,255);
-      stroke(230,230,0)
-      quad(0,10,2,5,8,5,10,10)
-      //thing
-      noStroke();
-      fill(255,255,0)
-      triangle(2,4,5,-2,8,4);
-      pop();
-      
-
-    }
-  }
 }
+
