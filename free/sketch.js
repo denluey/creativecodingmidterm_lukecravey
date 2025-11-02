@@ -1,9 +1,17 @@
 let spacingX = 20
 let spacingY = 20
+let y = 0;   
+let x = 0 ;
+let cx1 = 0;
+let cx2 = 0;
+let cx3 = 0;
+let barx = 0
+let carspeed = 1;      
+let direction = 1;
 
 function setup(){
     createCanvas(1500,800);
-    frameRate(5);
+    frameRate(30);
   
   
   
@@ -19,10 +27,13 @@ rect(0,400,1500,750);
 //pavement
 fill(50,50,50)
 rect(0,700,1500,600);
-//sun
-car();
 railsnpoles(0,0);
+//car
+car();
+//clouds
 cloudone();
+cloudtwo();
+cloudthree();
 
 
     
@@ -37,10 +48,11 @@ function railsnpoles(xthing,ything){
     fill(50,50,50);
     rect(0,660,1500,25)
     //poles
-    for (let x = xthing ; x < xthing+1500; x += 400) {
+    barx = speedmove(30,-800,barx,1500);
+    for (let x = xthing ; x < xthing+3000; x += 400) {
         push();
         translate(x,0);
-        rect(50,669,50,75)
+        rect(barx+50,669,50,75)
         pop();
   }
 
@@ -48,49 +60,113 @@ function railsnpoles(xthing,ything){
 }
 
 function car(){
+    carshake();
     //body
     fill(50,50,50);
     beginShape();
-    vertex(500,690);
-    vertex(1000,690);
-    vertex(1000,640)
-    vertex(900,630);
-    vertex(850,520);
-    vertex(580,520);
-    vertex(550,630);
-    vertex(500,640);
+    vertex(500,690+y);
+    vertex(1000,690+y);
+    vertex(1000,640+y)
+    vertex(900,630+y);
+    vertex(850,520+y);
+    vertex(580,520+y);
+    vertex(550,630+y);
+    vertex(500,640+y);
     endShape();
     //wheel
-    ellipse(600,690,100,100);
-    ellipse(875,690,100,100);
+    ellipse(600,690+y,100,100);
+    ellipse(875,690+y,100,100);
     //window
     fill(200,200,200);
     beginShape();
-    vertex(895,630);
-    vertex(845,525);
-    vertex(750,525);
-    vertex(750,630);
+    vertex(895,630+y);
+    vertex(845,525+y);
+    vertex(750,525+y);
+    vertex(750,630+y);
     endShape();
 
 }
 
 function cloudone(){
+    cx1 = speedmove(5,-800,cx1,1500);
     fill(255,255,255)
     beginShape();
-    vertex(300,300);
-    vertex(500,300);
-    vertex(500,290);
-    vertex(300,290);
-    ellipse(300,295,10,10);
-    ellipse(500,295,10,10);
-    ellipse(400,260,80,80);
-    ellipse(350,290,80,80);
-    ellipse(390,290,50,50);
-    ellipse(325,290,50,50);
-    ellipse(420,290,60,60);
-    ellipse(430,280,70,70);
-    ellipse(470,290,50,50);
+    vertex(cx1+300,300);
+    vertex(cx1+500,300);
+    vertex(cx1+500,290);
+    vertex(cx1+300,290);
+    ellipse(cx1+300,295,10,10);
+    ellipse(cx1+500,295,10,10);
+    ellipse(cx1+400,260,80,80);
+    ellipse(cx1+350,290,80,80);
+    ellipse(cx1+390,290,50,50);
+    ellipse(cx1+325,290,50,50);
+    ellipse(cx1+420,290,60,60);
+    ellipse(cx1+430,280,70,70);
+    ellipse(cx1+470,290,50,50);
     endShape();
-
+}
+function cloudtwo(){
+    cx2 = speedmove(5,-1000,cx2,1000);
+    fill(255,255,255)
+    beginShape();
+    vertex(cx2+700,100);
+    vertex(cx2+900,100);
+    vertex(cx2+900,90);
+    vertex(cx2+700,90);
+    ellipse(cx2+800,95,10,10);
+    ellipse(cx2+700,95,10,10);
+    ellipse(cx2+900,60,80,80);
+    ellipse(cx2+850,90,80,80);
+    ellipse(cx2+890,90,50,50);
+    ellipse(cx2+925,90,50,50);
+    ellipse(cx2+820,90,60,60);
+    ellipse(cx2+730,80,70,70);
+    ellipse(cx2+770,90,50,50);
+    endShape();
 }
 
+function cloudthree(){
+    cx3 = speedmove(5,-1500,cx3,800);
+    fill(255,255,255)
+    beginShape();
+    vertex(cx3+1400,200);
+    vertex(cx3+1600,200);
+    vertex(cx3+1600,190);
+    vertex(cx3+1400,190);
+    ellipse(cx3+1400,195,10,10);
+    ellipse(cx3+1400,195,10,10);
+    ellipse(cx3+1500,160,80,80);
+    ellipse(cx3+1540,210,80,80);
+    ellipse(cx3+1490,190,50,50);
+    ellipse(cx3+1600,190,50,50);
+    ellipse(cx3+1440,210,60,60);
+    ellipse(cx3+1530,180,70,70);
+    ellipse(cx3+1570,190,50,50);
+    endShape();
+}
+
+
+function carshake(){
+  // move the car up and down
+  y += carspeed * direction;
+
+  // reverse direction when it reaches limits
+  if (y > 1 || y < -1) {
+    direction *= -1;
+  }
+}
+
+
+function speedmove(s,e,c,b){
+    let speed = s
+    let end = e
+    let x = c
+    let begin = b
+    //object's x is subtracted by a specific amount before it returns to the max screen extension
+     x -= speed; // move right
+  if (x < end) {
+    x = begin; // send it back to the left (adjust for object width)
+  }
+  return x; // send updated position back
+}
