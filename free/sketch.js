@@ -20,8 +20,11 @@ function setup(){
 function draw(){
 //sky
 background(70,170,255);
+//sun
+fill(255,255,230)
+ellipse (1000,200,80,80)
 // sea
-fill(20,120,235);
+fill(20,100,205);
 noStroke();
 rect(0,400,1500,750);
 //pavement
@@ -43,20 +46,19 @@ cloudthree();
 
 }
 
-function railsnpoles(xthing,ything){
-    //rail
-    fill(50,50,50);
-    rect(0,660,1500,25)
-    //poles
-    barx = speedmove(30,-800,barx,1500);
-    for (let x = xthing ; x < xthing+3000; x += 400) {
-        push();
-        translate(x,0);
-        rect(barx+50,669,50,75)
-        pop();
+function railsnpoles(xthing,ything) {
+  // rail
+  fill(50, 50, 50);
+  rect(0, 660, width, 25);
+
+  // poles
+  let polespace = 400;
+  barx = speedmove(50, -polespace, barx, polespace); // move poles left and loop
+
+  for (let i = 0; i < width / polespace + 2; i++) {
+    let xstuff = i * polespace + barx;
+    rect(xstuff, 669, 50, 75);
   }
-
-
 }
 
 function car(){
@@ -88,7 +90,7 @@ function car(){
 }
 
 function cloudone(){
-    cx1 = speedmove(5,-800,cx1,1500);
+    cx1 = speedmove(6,-600,cx1,1300);
     fill(255,255,255)
     beginShape();
     vertex(cx1+300,300);
@@ -107,7 +109,7 @@ function cloudone(){
     endShape();
 }
 function cloudtwo(){
-    cx2 = speedmove(5,-1000,cx2,1000);
+    cx2 = speedmove(5,-1000,cx2,800);
     fill(255,255,255)
     beginShape();
     vertex(cx2+700,100);
@@ -127,7 +129,7 @@ function cloudtwo(){
 }
 
 function cloudthree(){
-    cx3 = speedmove(5,-1500,cx3,800);
+    cx3 = speedmove(6,-1650,cx3,600);
     fill(255,255,255)
     beginShape();
     vertex(cx3+1400,200);
