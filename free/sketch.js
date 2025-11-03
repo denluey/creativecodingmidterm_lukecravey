@@ -53,9 +53,8 @@ function railsnpoles(xthing,ything) {
 
   // poles
   let polespace = 400;
-  barx = speedmove(50, -polespace, barx, polespace); // move poles left and loop
-
-  for (let i = 0; i < width / polespace + 2; i++) {
+  barx = speedmove(50, -polespace, barx, polespace); // speed, then the minimum spacing, then the current space, then maximum
+  for (let i = 0; i < width / polespace + 2; i++) {//i counts iterations
     let xstuff = i * polespace + barx;
     rect(xstuff, 669, 50, 75);
   }
@@ -166,9 +165,18 @@ function speedmove(s,e,c,b){
     let x = c
     let begin = b
     //object's x is subtracted by a specific amount before it returns to the max screen extension
-     x -= speed; // move right
+     x -= speed; // move left
   if (x < end) {
-    x = begin; // send it back to the left (adjust for object width)
+    x = begin; // send it back to the right
   }
-  return x; // send updated position back
+  return x; // send to the clouds or stuff
 }
+
+//function keyPressed(){
+// if (keyCode === RIGHT_ARROW) { // check if the right arrow is pressed
+//    speed+=1; // increase the variable
+// }
+// if (keyCode === LEFT_ARROW) { // check if the left arrow is pressed
+//    speed-=1; // decrease the variable
+//  }
+//}
