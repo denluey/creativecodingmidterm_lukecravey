@@ -47,14 +47,14 @@ function draw() {
 }
 
 function railsnpoles(xthing, ything) {
-  fill(50, 50, 50);
-  rect(0, 660, width, 25);
+  fill(150, 255, 150);
+  rect(0, 680, width, 25);
 
-  let polespace = 400;
-  barx = speedmove(60, -polespace, barx, polespace);
+  let polespace = random(100,500);
+  barx = speedmove(6, -polespace, barx, polespace);
   for (let i = 0; i < width / polespace + 2; i++) {
     let xstuff = i * polespace + barx;
-    rect(xstuff, 669, 50, 75);
+    rect(xstuff, 620, 10, 75);
   }
 }
 
