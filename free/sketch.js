@@ -5,8 +5,11 @@ let x = 0;
 let barx = 0;
 let carspeed = 1;
 let direction = 1;
+let polespeed = 10;
+let polespace = 100
 
 let clouds = []; // <— array to hold all clouds
+let poles = [];
 
 function setup() {
   createCanvas(1500, 800);
@@ -37,7 +40,7 @@ function draw() {
   fill(50, 50, 50);
   rect(0, 700, 1500, 600);
 
-  railsnpoles(0, 0);
+  grass(0, 0);
   car();
 
   // draw all clouds from array
@@ -46,12 +49,12 @@ function draw() {
   }
 }
 
-function railsnpoles(xthing, ything) {
+//make these spiky and then add unique flowers with the same code as the clouds
+function grass(xthing, ything) {
   fill(150, 255, 150);
   rect(0, 680, width, 25);
 
-  let polespace = random(100,500);
-  barx = speedmove(6, -polespace, barx, polespace);
+  barx = speedmove(polespeed, -polespace, barx, polespace);
   for (let i = 0; i < width / polespace + 2; i++) {
     let xstuff = i * polespace + barx;
     rect(xstuff, 620, 10, 75);
