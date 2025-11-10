@@ -5,8 +5,8 @@ let x = 0;
 let barx = 0;
 let carspeed = 1;
 let direction = 1;
-let polespeed = 10;
-let polespace = 100
+let polespeed = 15;
+let polespace = 50;
 
 let clouds = []; // <— array to hold all clouds
 let poles = [];
@@ -54,11 +54,11 @@ function grass(xthing, ything) {
   fill(150, 255, 150);
   rect(0, 680, width, 25);
 
-  barx = speedmove(polespeed, -polespace, barx, polespace);
-  for (let i = 0; i < width / polespace + 2; i++) {
-    let xstuff = i * polespace + barx;
-    rect(xstuff, 620, 10, 75);
-  }
+  barx = speedmove(polespeed, -500-polespace, barx, 0);
+  for (let i = 0; i < width / polespace + 500; i++) {
+  let xstuff = i * polespace + barx;
+  triangle(xstuff, 685, 58 + xstuff, 670, 100 + xstuff, 685);
+}
 }
 
 function car() {
