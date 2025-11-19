@@ -9,6 +9,19 @@ let polespeed = 15;
 let polespace = 50;
 let ud = 0;
 let udv = 0;
+let cd = 0;
+let cdv = 0;
+let bd = 0;
+let bdv = 0;
+let birddelay = 20;   
+let birdtimer = 0;
+let birdactive = false;
+let targetcd = -1000;
+let targetbd = 400
+let numLines = 6;          // straight stolen
+let lineYs = [];           // straight stolen
+let offsets = [];          // straight stolen
+let waveHeight = 40;
 
 let clouds = []; // <— array to hold all clouds
 let poles = [];
@@ -30,28 +43,66 @@ function setup() {
     { x: 0, speed: 15, end: -1000, start: 1500, y: 670 },
     { x: 0, speed: 15, end: -1650, start: 1300, y: 690 },
   ];
+
+  for (let i = 0; i < numLines; i++){
+  lineYs[i]   = map(i, 0, numLines-1, height*0.4, height*0.9);
+  offsets[i]  = random(TWO_PI);
+}
 }
 
 function draw() {
   ud += udv;
+  cd += (targetcd - cd) * 0.1;
+  if (birdactive) {
+  bd += (targetbd - bd) * 0.05;
+  }
 
-  udv *= 0.9;
+  udv *= 1.1;
 
   if (abs(udv) < 0.1) {
     udv = 0;
   }
+  if (abs(bdv) < 0.1) {
+    bdv = 0;
+  }
+
+ if (birdtimer > 0) {
+  birdtimer--;
+  if (birdtimer === 0) {
+    birdactive = true; // start moving after delay
+  }
+}
+  
 
   // sky
   background(70, 170, 255);
 
+  
+
   // sun
   fill(255, 255, 230);
   ellipse(1000, 200, 80, 80);
+  
+  //freedomlines
+
+  drawOceanLines();
 
   // sea
   fill(20, 100, 205);
   noStroke();
   rect(0, 400 + ud, 1500, 750);
+
+  //bird
+  fill(0)
+  ellipse(750,800-ud,20,80)
+  triangle(745,770-ud,750,750-ud,754,770-ud)
+  triangle(750,780-ud,750,820-ud,650,820-ud)
+  triangle(755,780-ud,755,820-ud,840,820-ud)
+
+  //bird2
+  fill(0)
+  ellipse(750,-200+bd,20,20)
+  quad(750, -212+bd, 796, -190+bd, 750, -198+bd, 704, -190+bd);
 
   // pavement
   fill(50, 50, 50);
@@ -68,6 +119,10 @@ function draw() {
   }
 
   car();
+
+  //wall
+  fill(100,100,100);
+  rect(0,0,width,height);
 
   
 }
@@ -211,9 +266,42 @@ function speedmove(s, e, c, b) {
 
 function keyPressed(){
  if (keyCode === UP_ARROW) { // check if the right arrow is pressed
-    udv = 100; // increase the variable
+    udv = 10; // increase the variable
+    cdv = 800;
+    targetcd = 0
+    birdtimer = birddelay;
+    birdactive = false;
+    bd = -400
  }
-// if (keyCode === LEFT_ARROW) { // check if the left arrow is pressed
-//    speed-=1; // decrease the variable
-//  }
+}
+
+function drawOceanLines(){
+  strokeWeight(90);
+  for (let i = 0; i < numLines; i++){
+    let y0    = lineYs[i] + cd
+    let amp   = waveHeight * map(i, 0, numLines-1, 0.3, 1.0);
+    let speed = 0.02 + i * 0.005;
+    let col   = lerpColor(color(255,255,255), color(177,240,255), i/(numLines-1));
+    stroke(col);
+
+    beginShape();
+      vertex(0, y0);
+      let segments = 8;
+      let segW     = width / segments;
+      for (let j = 0; j < segments; j++){
+        let x1 = j * segW;
+        let x2 = (j+1) * segW;
+        let cx1 = x1 + segW*0.3;
+        let cy1 = y0 + amp * sin((j + offsets[i]) * PI/segments * 2);
+        let cx2 = x2 - segW*0.3;
+        let cy2 = y0 + amp * sin((j+1 + offsets[i]) * PI/segments * 2);
+        let ax  = x2;
+        let ay  = y0 + amp * sin((j+0.5 + offsets[i]) * PI/segments * 2);
+        bezierVertex(cx1, cy1, cx2, cy2, ax, ay);
+      }
+      vertex(width, y0);
+    endShape();
+
+    offsets[i] += speed;
+  }
 }
