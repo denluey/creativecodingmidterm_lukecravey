@@ -5,14 +5,16 @@ let x = 0;
 let barx = 0;
 let carspeed = 1;
 let direction = 1;
-let polespeed = 15;
+let polespeed = 30;
 let polespace = 50;
 let ud = 0;
 let udv = 0;
 let cd = 0;
 let cdv = 0;
 let bd = 0;
+let bx = 750;
 let bdv = 0;
+let bxv = 20;
 let birddelay = 20;   
 let birdtimer = 0;
 let birdactive = false;
@@ -22,6 +24,11 @@ let numLines = 6;          // straight stolen
 let lineYs = [];           // straight stolen
 let offsets = [];          // straight stolen
 let waveHeight = 40;
+let numpress = 0;
+let wm = 0;
+let wmv = 0;
+let blink = 0;
+let blinkv = 0;
 
 let clouds = []; // <— array to hold all clouds
 let poles = [];
@@ -31,7 +38,7 @@ function setup() {
   createCanvas(1500, 800);
   frameRate(30);
 
-  // initialize clouds
+  
   clouds = [
     { x: 0, speed: 6, end: -600, start: 1300, y: 300 },
     { x: 0, speed: 5, end: -1000, start: 800, y: 100 },
@@ -39,23 +46,27 @@ function setup() {
   ];
 
   flowers = [
-    { x: 0, speed: 15, end: -600, start: 2000, y: 680 },
-    { x: 0, speed: 15, end: -1000, start: 1500, y: 670 },
-    { x: 0, speed: 15, end: -1650, start: 1300, y: 690 },
+    { x: 0, speed: 30, end: -600, start: 2000, y: 680 },
+    { x: 0, speed: 30, end: -1000, start: 1500, y: 670 },
+    { x: 0, speed: 30, end: -1650, start: 1300, y: 690 },
   ];
 
   for (let i = 0; i < numLines; i++){
   lineYs[i]   = map(i, 0, numLines-1, height*0.4, height*0.9);
   offsets[i]  = random(TWO_PI);
 }
+
 }
 
 function draw() {
   ud += udv;
+  blink += blinkv
+  wm += wmv;
   cd += (targetcd - cd) * 0.1;
   if (birdactive) {
   bd += (targetbd - bd) * 0.05;
   }
+  wmv *= 1.1;
 
   udv *= 1.1;
 
@@ -66,13 +77,36 @@ function draw() {
     bdv = 0;
   }
 
+  if (abs(wmv) < 0.1) {
+  wmv = 0;
+}
+
+ bx = constrain(bx, 50, width - 50);
+ if (keyIsDown(LEFT_ARROW)) {
+   bx -= bxv;
+  }
+
+if (keyIsDown(RIGHT_ARROW)) {
+    bx += bxv;
+  }
+
  if (birdtimer > 0) {
   birdtimer--;
   if (birdtimer === 0) {
     birdactive = true; // start moving after delay
   }
 }
-  
+
+ if (blink > height/2) {
+  blink = height/2;
+  blinkv = 0;   
+}
+
+// When fully open
+if (blink < 0) {
+  blink = 0;
+  blinkv = 0;   
+}
 
   // sky
   background(70, 170, 255);
@@ -100,9 +134,9 @@ function draw() {
   triangle(755,780-ud,755,820-ud,840,820-ud)
 
   //bird2
-  fill(0)
-  ellipse(750,-200+bd,20,20)
-  quad(750, -212+bd, 796, -190+bd, 750, -198+bd, 704, -190+bd);
+  fill(0);
+  ellipse(bx, -200 + bd, 20, 20);
+  quad(bx, -212 + bd, bx + 46, -190 + bd, bx, -198 + bd, bx - 46, -190 + bd);
 
   // pavement
   fill(50, 50, 50);
@@ -120,9 +154,24 @@ function draw() {
 
   car();
 
-  //wall
+  //lockwall
   fill(100,100,100);
-  rect(0,0,width,height);
+  rect(-wm,0,width,height);
+
+  //lock
+  fill(200,200,200);
+  rect(600-wm,300+wm,300,250);
+  arc(750-wm, 300-wm, 250, 250, PI, TWO_PI);
+  fill(100,100,100);
+  arc(750-wm, 300-wm, 150, 150, PI, TWO_PI);
+
+  //eyelids
+  fill(0);
+  rect(0,-400+blink,width,1/2*height);
+  rect(0,800-blink,width,1/2*height);
+
+
+
 
   
 }
@@ -265,43 +314,78 @@ function speedmove(s, e, c, b) {
 }
 
 function keyPressed(){
- if (keyCode === UP_ARROW) { // check if the right arrow is pressed
-    udv = 10; // increase the variable
-    cdv = 800;
-    targetcd = 0
-    birdtimer = birddelay;
-    birdactive = false;
-    bd = -400
+ if (keyCode === UP_ARROW) { 
+    numpress++;
+    if (numpress === 1){
+      wmv = 20;
+    }
+    else if (numpress === 2) {
+      udv = 10; 
+      cdv = 800;
+      targetcd = 0
+      birdtimer = birddelay;
+      birdactive = false;
+      bd = -400
+    }
+    else if (numpress === 3) {
+      blinkv= 20;    
+    }
+    else if (numpress === 4) {
+      blinkv = -20
+      resetScene();    // third press resets everything
+    }
  }
 }
 
 function drawOceanLines(){
-  strokeWeight(90);
-  for (let i = 0; i < numLines; i++){
-    let y0    = lineYs[i] + cd
-    let amp   = waveHeight * map(i, 0, numLines-1, 0.3, 1.0);
-    let speed = 0.02 + i * 0.005;
+  strokeWeight(90); //how thick the lines are
+  for (let i = 0; i < numLines; i++){ //draws the layers
+    let y0    = lineYs[i] + cd //vertical posish
+    let amp   = waveHeight * map(i, 0, numLines-1, 0.3, 1.0); //amplitude
+    let speed = 0.02 + i * 0.005; //speed of wave
     let col   = lerpColor(color(255,255,255), color(177,240,255), i/(numLines-1));
-    stroke(col);
+    stroke(col); //color stuff
 
     beginShape();
-      vertex(0, y0);
-      let segments = 8;
-      let segW     = width / segments;
+      vertex(0, y0); //where it starts
+      let segments = 8; //number of segments
+      let segW     = width / segments;  //width
       for (let j = 0; j < segments; j++){
-        let x1 = j * segW;
+        let x1 = j * segW; //x of seg
         let x2 = (j+1) * segW;
         let cx1 = x1 + segW*0.3;
         let cy1 = y0 + amp * sin((j + offsets[i]) * PI/segments * 2);
         let cx2 = x2 - segW*0.3;
         let cy2 = y0 + amp * sin((j+1 + offsets[i]) * PI/segments * 2);
-        let ax  = x2;
+        let ax  = x2; //end of segment
         let ay  = y0 + amp * sin((j+0.5 + offsets[i]) * PI/segments * 2);
-        bezierVertex(cx1, cy1, cx2, cy2, ax, ay);
+        bezierVertex(cx1, cy1, cx2, cy2, ax, ay); //drawing curve
       }
-      vertex(width, y0);
+      vertex(width, y0); //where it ends
     endShape();
 
-    offsets[i] += speed;
+    offsets[i] += speed; //animating
   }
+}
+
+function resetScene() {
+  ud = 0;
+  udv = 0;
+  wm = 0;
+  wmv = 0;
+  cd = 0;
+  targetcd = -1000;
+  
+  bd = 0;
+  bdv = 0;
+  bx = 750;
+  
+  birdtimer = 0;
+  birdactive = false;
+  
+  barx = 0;
+  numpress = 0; 
+
+  for (let c of clouds) c.x = 0;
+  for (let f of flowers) f.x = 0;
 }
